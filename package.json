@@ -1,0 +1,26 @@
+{
+  "name": "next-s3",
+  "version": "0.0.1",
+  "description": "A CLI tool to deploy any next.js app on S3",
+  "main": "index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/szalaybalazs/next-s3.git"
+  },
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "commander": "^9.4.0",
+    "dotenv": "^8.2.0",
+    "shelljs": "^0.8.5"
+  },
+  "author": "Balázs Szalay <balazs@szalay.me>",
+  "bin": {
+    "airtable-i18n": "./cli.js"
+  },
+  "keywords": [
+    "i18n",
+    "airtable",
+    "translation"
+  ]
+}
