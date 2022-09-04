@@ -16,7 +16,7 @@
   },
   "author": "Balázs Szalay <balazs@szalay.me>",
   "bin": {
-    "airtable-i18n": "./cli.js"
+    "next-s3": "./index.js"
   },
   "keywords": [
     "i18n",
