@@ -1,6 +1,6 @@
 {
   "name": "next-s3",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A CLI tool to deploy any next.js app on S3",
   "main": "index.js",
   "license": "MIT",
@@ -19,8 +19,17 @@
     "next-s3": "./index.js"
   },
   "keywords": [
-    "i18n",
-    "airtable",
-    "translation"
-  ]
+    "next",
+    "aws",
+    "s3"
+  ],
+  "devDependencies": {
+    "assert": "^2.0.0",
+    "buffer": "^6.0.3",
+    "events": "^3.3.0",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
+    "util": "^0.12.4"
+  }
 }
