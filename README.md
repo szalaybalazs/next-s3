@@ -35,7 +35,7 @@
   <p align="center">
     Deploy your static Next.js sites in one command
     <br />
-    <a href="https://github.com/szalaybalazs/next-s3"><strong>Explore the docs »</strong></a>
+    <a href="#getting-started"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/szalaybalazs/next-s3/issues">Report Bug</a>
