@@ -150,6 +150,7 @@ next-s3 deploy --bucket <bucket-name> --distribution <cloudfront distribution id
 - [ ] Add custom config options
 - [ ] Create additional commands
     - [ ] Project scaffolding
+- [ ] Create github action
 
 See the [open issues](https://github.com/szalaybalazs/next-s3/issues) for a full list of proposed features (and known issues).
 
