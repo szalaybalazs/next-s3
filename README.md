@@ -79,7 +79,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](/assets/banner.png)
+![Product Name Screen Shot](/assets/banner.png)
 
 A tiny CLI tool to host any of your static next.js sites on AWS S3 and Cloudfront.
 
