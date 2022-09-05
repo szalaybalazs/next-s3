@@ -50,10 +50,9 @@ const deploy = (options) => {
 
   logger.log(`Building project`, '🧱', 2, 7);
   try {
-    const buildResult = exec(command('build'), { silent: !verbose });
-  } catch (error) {
-    const buildResult = exec(command('next build'), { silent: !verbose });
-  }
+    exec(command('pre:build'), { silent: !verbose });
+  } catch (error) {}
+  const buildResult = exec(command('next build'), { silent: !verbose });
   if (buildResult.code !== 0) {
     logger.error(`Failed to build project ${buildResult.stderr}`);
     return process.exit(1);
