@@ -1,6 +1,6 @@
 {
   "name": "next-s3",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A CLI tool to deploy any next.js app on S3",
   "main": "index.js",
   "license": "MIT",
