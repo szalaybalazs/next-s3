@@ -1,8 +1,11 @@
+process.env.AWS_SDK_LOAD_CONFIG = 1;
+
 const logger = require('./log');
 const fs = require('fs');
-const path = require('path');
 const shell = require('shelljs');
 const chalk = require('chalk');
+const AWS = require('aws-sdk');
+const path = require('path');
 
 const managers = ['yarn', 'npm'];
 
@@ -12,9 +15,25 @@ const getFlags = (options) => {
     .map(([key, value]) => `--${key} ${typeof value === 'string' ? value : ''}`.trim())
     .join(' ');
 };
-const deploy = (options) => {
+
+const deploy = async (options) => {
   const { profile, publicKey, secretKey, bucket, distribution, basepath, env, verbose, manager } = options;
+
+  AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile });
+  const s3 = new AWS.S3();
+
   logger.log(`Preparing deploy`, '🛠 ', 1, 7);
+
+  const location = await s3
+    .getBucketLocation({ Bucket: bucket })
+    .promise()
+    .catch(() => null);
+  const region = location && location.LocationConstraint;
+
+  if (!region) {
+    logger.error(`No bucket found with name: "${bucket}"`);
+    return process.exit(1);
+  }
 
   if (verbose) {
     logger.verbose({
@@ -23,6 +42,7 @@ const deploy = (options) => {
       'AWS Public Key': publicKey,
       'AWS Secret Key': secretKey,
       'AWS S3 Bucket Name': bucket,
+      'AWS Region': region,
       'AWS Cloudfront Distribution Id': distribution,
       'Deployment basepath': basepath,
       'Env file location': env,
@@ -46,6 +66,13 @@ const deploy = (options) => {
     const _cmd = cmd.replace(/\n/g, '').trim();
     if (verbose) console.log(chalk.white.bold('Executing'), chalk.gray(_cmd));
     return shell.exec(_cmd, { silent: !verbose });
+  };
+
+  const getFiles = () => {
+    const res = exec(`find ./out -type f -name '*.html'`);
+    const files = res.stdout.split('\n').filter(Boolean);
+
+    return files;
   };
 
   logger.log(`Building project`, '🧱', 2, 7);
@@ -73,7 +100,32 @@ const deploy = (options) => {
     recursive: true,
   };
 
-  const nextResult = exec(`aws s3 cp ./out s3://${bucket} ${getFlags(copyOptions)}`);
+  const files = getFiles();
+  for (file of files) {
+    const content = fs.readFileSync(path.join(process.cwd(), file));
+    const Key = file.replace('./out/', '');
+    const params = {
+      Bucket: bucket,
+      Key,
+      Body: content,
+    };
+
+    await s3.upload(params).promise();
+
+    if (file.endsWith('.html')) {
+      const copyTarget = Key.replace(/\.html$/, '');
+      const copyParams = {
+        Bucket: bucket,
+        CopySource: `/${bucket}/${Key}`,
+        Key: copyTarget,
+      };
+      await s3.copyObject(copyParams).promise();
+    }
+  }
+
+  // const nextResult = exec(`aws s3 cp ./out s3://${bucket} ${getFlags(copyOptions)}`);
+
+  return;
   if (nextResult.code !== 0) {
     const line = nextResult.stderr.split('\n')[0];
     const segments = line.split(' ');
@@ -141,16 +193,48 @@ const deploy = (options) => {
   } else {
     logger.log('Invalidating AWS Cloudfront cache', '☁️ ', 7, 7);
     try {
+      const distributionConfig = JSON.stringify({
+        Enabled: true,
+        CallerReference: `${Date.now()}`,
+        Comment: 'Distribution hosting static site',
+        DefaultRootObject: 'index.html',
+        DefaultCacheBehavior: {
+          TargetOriginId: 'STRING_VALUE',
+          ViewerProtocolPolicy: 'redirect-to-https',
+          AllowedMethods: {
+            Items: ['GET', 'POST', 'HEAD', 'OPTIONS'],
+            Quantity: 4,
+            CachedMethods: {
+              Items: ['GET', 'HEAD', 'OPTIONS'],
+              Quantity: 3,
+            },
+          },
+        },
+        CustomErrorResponses: {
+          Quantity: 1,
+          Items: [
+            {
+              ErrorCode: 404,
+              ResponsePagePath: '/404.html',
+              ResponseCode: '404',
+              ErrorCachingMinTTL: 10,
+            },
+          ],
+        },
+      });
       const distributionOptions = {
         ...awsOptions,
         id: distribution,
         'if-match': distribution,
         'distribution-config': 'file://out/distribution.json',
       };
-      fs.writeFileSync('./out/distribution.json', policy);
-      exec(`aws cloudfront update-distribution ${getFlags(distributionOptions)}`);
+      fs.writeFileSync('./out/distribution.json', distributionConfig);
+      const res = exec(`aws cloudfront update-distribution ${getFlags(distributionOptions)}`);
+      console.log(res);
       fs.rmSync('./out/distribution.json');
-    } catch (error) {}
+    } catch (error) {
+      if (verbose) logger.error(`Failed to update distribution: ${error.message}`);
+    }
     const distributionOptions = {
       ...awsOptions,
       'distribution-id': distribution,
