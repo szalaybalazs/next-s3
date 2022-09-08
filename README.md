@@ -27,7 +27,7 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
+        <!-- <li><a href="#prerequisites">Prerequisites</a></li> -->
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
@@ -46,6 +46,7 @@
 </details>
 
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 ![Product Name Screen Shot](/assets/banner.png)
@@ -58,27 +59,25 @@ With that said, there are some pros and cons against hosting on S3;
 
 **Pros:**
 
-* There is no need for a server, your files will be hosted statically, which is simply faster.
-* You can utilize Cloudfront's built-in GZipping, which will reduce your load times even more
+- There is no need for a server, your files will be hosted statically, which is simply faster.
+- You can utilize Cloudfront's built-in GZipping, which will reduce your load times even more
 
 **Cons:**
 
-* Only static sites can be hosted on S3, with absolutely no SSR or ISG.
-* You can not use any of Next's built-in API or middle-ware logic.
-* A 3rd party image optimizer has to be used - or none at all.
+- Only static sites can be hosted on S3, with absolutely no SSR or ISG.
+- You can not use any of Next's built-in API or middle-ware logic.
+- A 3rd party image optimizer has to be used - or none at all.
 
 I know there are other web frameworks, created for such type of hosting but let's be honest; working on a next.js project can't be compared DX-wise to any other production framework.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
-### Prerequisit
-
-**IMPORTANT:** This package uses the latest version of the [aws-cli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html). Please make sure you are also [logged in with your AWS account](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html).
-
 ### Installation
+
 Using NPM
 
 ```shell
@@ -96,6 +95,7 @@ yarn add -D next-s3
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
+
 ## Usage
 
 Run the following command from inside your Next.js project:
@@ -112,11 +112,14 @@ All the parameters available to use:
 
 | Option             | Required | Description                                          | Default |
 | ------------------ | :------: | ---------------------------------------------------- | :-----: |
-| -b, --bucket       | Yes      | The name of the S3 bucket to be used.                | -       |
-| -d, --distribution | No       | Cloudformation ID to be invaidated after deployment. | -       |
-| -p, --basepath     | No       | Base path the site will be available under.          | '/'     |
-| --manager          | No       | Package manager to be used to run commands.          | 'yarn'  |
-| -v, --verbose      | No       | Enable verbose logging                               | false   |
+| -p, --profile      |    No    | Name of the local AWS profile which will be used     |    -    |
+| --publicKey        |    No    | Public access key which will be used during upload   |    -    |
+| --secretKey        |    No    | Secret key generated for the public key              |    -    |
+| -b, --bucket       |   Yes    | The name of the S3 bucket to be used.                |    -    |
+| -d, --distribution |    No    | Cloudformation ID to be invaidated after deployment. |    -    |
+| -p, --basepath     |    No    | Base path the site will be available under.          |   '/'   |
+| --manager          |    No    | Package manager to be used to run commands.          | 'yarn'  |
+| -v, --verbose      |    No    | Enable verbose logging                               |  false  |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -143,13 +146,14 @@ next-s3 deploy --bucket <bucket-name> --distribution <cloudfront distribution id
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
+
 ## Roadmap
 
 - [x] Create initial version
 - [ ] Add `dotenv^ support
 - [ ] Add custom config options
 - [ ] Create additional commands
-    - [ ] Project scaffolding
+  - [ ] Project scaffolding
 - [ ] Create github action
 
 See the [open issues](https://github.com/szalaybalazs/next-s3/issues) for a full list of proposed features (and known issues).
@@ -157,6 +161,7 @@ See the [open issues](https://github.com/szalaybalazs/next-s3/issues) for a full
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -173,11 +178,13 @@ Don't forget to give the project a star! Thanks again!
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## License
+
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTACT -->
+
 ## Contact
 
 Balazs Szalay - [@szalayme](https://twitter.com/szalayme) - balazs@szalay.me
