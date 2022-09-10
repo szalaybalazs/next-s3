@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.13] - 2022-09-06
+
+- Added pre and post build scripts
+
+## [0.0.11] - 2022-09-06
+
+- Added env file parsing
+
 ## [0.0.10] - 2022-09-08
 
 The first major release of the package; every aws related logic now uses the official `aws-sdk` node package, instead of the `aws-cli`

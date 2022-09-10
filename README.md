@@ -110,16 +110,16 @@ next-s3 deploy --bucket <bucket-name> --distribution <cloudfront distribution id
 
 All the parameters available to use:
 
-| Option             | Required | Description                                          | Default |
-| ------------------ | :------: | ---------------------------------------------------- | :-----: |
-| -p, --profile      |    No    | Name of the local AWS profile which will be used     |    -    |
-| --publicKey        |    No    | Public access key which will be used during upload   |    -    |
-| --secretKey        |    No    | Secret key generated for the public key              |    -    |
-| -b, --bucket       |   Yes    | The name of the S3 bucket to be used.                |    -    |
-| -d, --distribution |    No    | Cloudformation ID to be invaidated after deployment. |    -    |
-| -p, --basepath     |    No    | Base path the site will be available under.          |   '/'   |
-| --manager          |    No    | Package manager to be used to run commands.          | 'yarn'  |
-| -v, --verbose      |    No    | Enable verbose logging                               |  false  |
+| Option             | Dotenv key           | Required | Description                                          | Default |
+| ------------------ | -------------------- | :------: | ---------------------------------------------------- | :-----: |
+| -p, --profile      | NEXT_S3_PROFILE      |    No    | Name of the local AWS profile which will be used     |    -    |
+| --publicKey        | NEXT_S3_PUBLIC_KEY   |    No    | Public access key which will be used during upload   |    -    |
+| --secretKey        | NEXT_S3_PRIVATE_KEY  |    No    | Secret key generated for the public key              |    -    |
+| -b, --bucket       | NEXT_S3_BUCKET       |   Yes    | The name of the S3 bucket to be used.                |    -    |
+| -d, --distribution | NEXT_S3_DISTRIBUTION |    No    | Cloudformation ID to be invaidated after deployment. |    -    |
+| -p, --basepath     | NEXT_S3_BASEPATH     |    No    | Base path the site will be available under.          |   '/'   |
+| --manager          | -                    |    No    | Package manager to be used to run commands.          | 'yarn'  |
+| -v, --verbose      | -                    |    No    | Enable verbose logging                               |  false  |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

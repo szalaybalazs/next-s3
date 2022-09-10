@@ -17,6 +17,10 @@ export const command = (cmd: string, manager: string = 'yarn') => `${manager} ru
  */
 export const exec = (cmd: string, verbose: boolean = false) => {
   const _cmd = cmd.replace(/\n/g, '').trim();
-  if (verbose) console.log(chalk.white.bold('Executing'), chalk.gray(_cmd));
-  return shell.exec(_cmd, { silent: !verbose });
+  try {
+    if (verbose) console.log(chalk.white.bold('Executing'), chalk.gray(_cmd));
+    return shell.exec(_cmd, { silent: !verbose });
+  } catch (error) {
+    return null;
+  }
 };

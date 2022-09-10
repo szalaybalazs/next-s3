@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import { getAws } from './helpers/aws';
 import { configureDistribution, invalidate } from './helpers/cloudfront';
+import { parseDotenv } from './helpers/env';
 import { getFiles } from './helpers/files';
 import { command, exec } from './helpers/shell';
 import { configureBucket, getRegion, uploadFiles } from './helpers/storage';
@@ -8,6 +9,7 @@ import logger from './log';
 import { iDeployProps } from './types';
 
 export const deploy = async (options: iDeployProps, build: boolean = false) => {
+  options = parseDotenv(options);
   const start = Date.now();
   let step = 0;
 
@@ -20,7 +22,9 @@ export const deploy = async (options: iDeployProps, build: boolean = false) => {
 
   if (build) {
     logger.log('Building site', '🔧', ++step, maxSteps);
+    exec(command('pre:build', options.manager || 'yarn'));
     exec(command('build', options.manager || 'yarn'));
+    exec(command('post:build', options.manager || 'yarn'));
 
     logger.log('Exporting build', '📤', ++step, maxSteps);
     exec(command('next export', options.manager || 'yarn'));

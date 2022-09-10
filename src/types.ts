@@ -12,4 +12,5 @@ export interface iStorageProps extends iAwsProps {
 
 export interface iDeployProps extends iStorageProps {
   manager: 'yarn' | 'npm';
+  env?: string;
 }
