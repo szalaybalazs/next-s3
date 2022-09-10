@@ -4,7 +4,9 @@ import fs from 'fs';
 import path from 'path';
 import mime from 'mime-types';
 import logger from '../log';
+import pLimit from 'p-limit';
 
+const limit = pLimit(5);
 /**
  * Get bucket region
  * @param s3 S3 instance
@@ -26,6 +28,38 @@ export const getRegion = async (s3: AWS.S3, bucket: string): Promise<string> => 
   }
 };
 
+const uploadFile = async (file: string, bucket: string, s3: AWS.S3, bar: cliProgress.SingleBar): Promise<boolean> => {
+  const content = fs.readFileSync(path.join(process.cwd(), file));
+  const Key = file.replace('./out/', '');
+  const params = {
+    Bucket: bucket,
+    Key,
+    Body: content,
+    ContentType: mime.lookup(file.split('.').pop() || file) as any,
+    CacheControl: 'immutable,max-age=100000000,public',
+  };
+
+  try {
+    await s3.upload(params).promise();
+
+    if (file.endsWith('.html')) {
+      const copyTarget = Key.replace(/\.html$/, '');
+      const copyParams = {
+        Bucket: bucket,
+        CopySource: `/${bucket}/${Key}`,
+        Key: copyTarget,
+      };
+      await s3.copyObject(copyParams).promise();
+    }
+    bar.increment(1);
+
+    return true;
+  } catch (error: any) {
+    logger.error(`Failed to upload file: "${file.split('/').pop()}": ${error.message}`);
+    return false;
+  }
+};
+
 /**
  * Upload files to S3
  * @param s3 s3 bucket name
@@ -44,36 +78,7 @@ export const uploadFiles = async (s3: AWS.S3, bucket: string, files: string[]) =
 
   bar.start(fileList.length, 0, {});
 
-  await Promise.all(
-    fileList.map(async (file) => {
-      const content = fs.readFileSync(path.join(process.cwd(), file));
-      const Key = file.replace('./out/', '');
-      const params = {
-        Bucket: bucket,
-        Key,
-        Body: content,
-        ContentType: mime.lookup(file.split('.').pop() || file) as any,
-        CacheControl: 'immutable,max-age=100000000,public',
-      };
-
-      try {
-        await s3.upload(params).promise();
-
-        if (file.endsWith('.html')) {
-          const copyTarget = Key.replace(/\.html$/, '');
-          const copyParams = {
-            Bucket: bucket,
-            CopySource: `/${bucket}/${Key}`,
-            Key: copyTarget,
-          };
-          await s3.copyObject(copyParams).promise();
-        }
-        bar.increment(1);
-      } catch (error: any) {
-        logger.error(`Failed to upload file: "${file.split('/').pop()}": ${error.message}`);
-      }
-    }),
-  );
+  await Promise.all(fileList.map((file) => limit(() => uploadFile(file, bucket, s3, bar))));
   bar.stop();
 };
 
