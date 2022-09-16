@@ -36,7 +36,7 @@ const uploadFile = async (file: string, bucket: string, s3: AWS.S3, bar: cliProg
     Key,
     Body: content,
     ContentType: mime.lookup(file.split('.').pop() || file) as any,
-    CacheControl: 'immutable,max-age=100000000,public',
+    CacheControl: 'immutable,public',
   };
 
   try {
