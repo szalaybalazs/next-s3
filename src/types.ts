@@ -8,6 +8,7 @@ export interface iStorageProps extends iAwsProps {
   bucket: string;
   distribution?: string;
   basepath?: string;
+  skipConfig?: boolean;
 }
 
 export interface iDeployProps extends iStorageProps {

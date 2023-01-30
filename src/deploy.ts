@@ -34,12 +34,17 @@ export const deploy = async (options: iDeployProps, build: boolean = false) => {
   const files = getFiles();
   await uploadFiles(s3, options.bucket, files);
 
-  logger.log('Configuring bucket', '🪣', ++step, maxSteps);
-  await configureBucket(s3, options.bucket);
+  if (!options.skipConfig) {
+    logger.log('Configuring bucket', '🪣', ++step, maxSteps);
+    await configureBucket(s3, options.bucket);
+  } else logger.log('Skipping bucket configuration...', '⛷️', ++step, maxSteps);
 
   if (options.distribution) {
-    logger.log('Configuring cloudfront', '☁️', ++step, maxSteps);
-    await configureDistribution(cloudfront, region, options.distribution);
+    if (!options.skipConfig) {
+      logger.log('Configuring cloudfront', '☁️', ++step, maxSteps);
+      await configureDistribution(cloudfront, region, options.distribution);
+    } else logger.log('Skipping cloudfront configuration...', '🏄', ++step, maxSteps);
+
     await invalidate(cloudfront, options.distribution);
   } else logger.log('No cloudfront defined, skipping', '☁️', ++step, maxSteps);
 

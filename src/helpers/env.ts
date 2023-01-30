@@ -18,5 +18,6 @@ export const parseDotenv = (options: iDeployProps): iDeployProps => {
     bucket: config.NEXT_S3_BUCKET || options.bucket,
     distribution: config.NEXT_S3_DISTRIBUTION || options.distribution,
     basepath: config.NEXT_S3_BASEPATH || options.basepath,
+    skipConfig: Boolean(config.NEXT_S3_SKIP_CONFIG || options.skipConfig || false),
   };
 };
